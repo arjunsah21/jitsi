@@ -28,6 +28,7 @@ import {
     IconShareDesktop,
     IconRec,
     IconStopRec,
+    IconUpload,
 } from '../../../base/icons';
 import JitsiMeetJS from '../../../base/lib-jitsi-meet';
 import {
@@ -99,6 +100,8 @@ import ToggleCameraButton from './ToggleCameraButton';
 import ToolbarButton from './ToolbarButton';
 import VideoSettingsButton from './VideoSettingsButton';
 
+import UploadPPT from '../../../uploadPPT/upload';
+import StopPPT from '../../../uploadPPT/stopPPT';
 /**
  * The type of the React {@code Component} props of {@link Toolbox}.
  */
@@ -248,6 +251,7 @@ type Props = {
 };
 
 var recStatus = false;
+var uploadPPTStatus = false;
 var recordingData = [];
 var recorder;
 
@@ -404,18 +408,8 @@ class Toolbox extends Component<Props> {
         this._onShortcutToggleTileView = this._onShortcutToggleTileView.bind(this);
         this._onEscKey = this._onEscKey.bind(this);
 
-        // adding local recording handler
-        // this._LocalRecording = this._LocalRecording.bind(this);
-        // this._startLocalRecording = this._startLocalRecording.bind(this);        
-        // this._stopLocalRecording = this._stopLocalRecording.bind(this);
-        // this._mixer = this._mixer.bind(this);
-        // this._getFilename = this._getFilename.bind(this);
+        this._UploadPPT = this._UploadPPT.bind(this);
         
-        // this.state = {
-        //     recStatus: false,
-        //     recorder,
-        //     recordingData: [],
-        // };
     }
 
     /**
@@ -1308,6 +1302,17 @@ class Toolbox extends Component<Props> {
         ];
     }
 
+    _UploadPPT() {
+        // alert('upload ppt');
+        if(!uploadPPTStatus) {
+            this.props.dispatch(openDialog(UploadPPT));
+            uploadPPTStatus = true;
+        } else {
+            this.props.dispatch(openDialog(StopPPT));
+            uploadPPTStatus = false;
+        }
+    }
+
     /**
      * Returns the buttons to be displayed in main or the overflow menu.
      *
@@ -1373,6 +1378,13 @@ class Toolbox extends Component<Props> {
             key = 'startLocalRec'
             onClick = { _LocalRecording }
             toggled = { recStatus }
+            />)
+
+        mainMenuAdditionalButtons.push(<ToolbarButton
+            icon = { IconUpload }
+            key = 'uploadPPT'
+            onClick = { this._UploadPPT }
+            toggled = { uploadPPTStatus }
             />)
 
         if (this.props._shouldShowButton('raisehand')) {
